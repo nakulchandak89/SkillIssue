@@ -223,7 +223,14 @@ export function fetchOpenClawSkills(source) {
     const cacheKey = `openclaw-tree:${source.repo}`
     return dedupedFetch(cacheKey, async () => {
         const treeUrl = `https://api.github.com/repos/${source.repo}/git/trees/HEAD?recursive=1`
-        const data = await ghFetch(treeUrl)
+        let data
+        try {
+            data = await ghFetch(treeUrl)
+        } catch (err) {
+            // Repo may have been deleted or renamed — return empty gracefully
+            console.warn('[OpenClaw] Could not fetch ' + source.repo + ': ' + err.message)
+            return []
+        }
 
         if (data.truncated) {
             console.warn('[OpenClaw] Tree response was truncated — some skills may not appear.')
