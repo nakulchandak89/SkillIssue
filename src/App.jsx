@@ -27,6 +27,7 @@ import Terms from './pages/Terms'
 import BottomNav from './components/BottomNav'
 import SplashScreen from './components/SplashScreen'
 import InstallPrompt from './components/InstallPrompt'
+import BackToTop from './components/BackToTop'
 import NotFound from './pages/NotFound'
 import SEO, { jsonLdSchemas } from './components/SEO'
 
@@ -96,6 +97,7 @@ export default function App() {
 
             {/* Bottom nav — direct child of root so no ancestor overflow/transform
                 can break position:fixed on iOS/Android Safari */}
+            <BackToTop />
             <BottomNav />
 
             {/* Global Modals (rendered above everything) */}
