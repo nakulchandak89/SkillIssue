@@ -168,6 +168,12 @@ export async function toggleVisibility(skillId, newVisibility) {
     const user = await account.get()
     if (!user) throw new Error('Not authenticated.')
 
+    // ── Ownership check: only the skill owner may change visibility ──
+    const skill = await databases.getDocument(DATABASE_ID, SKILLS_TABLE_ID, skillId)
+    if (skill.user_id !== user.$id) {
+        throw new Error('Unauthorized: you can only change visibility of your own skills.')
+    }
+
     const perms = [
         Permission.read(Role.any()),
         Permission.update(Role.user(user.$id)),
@@ -187,12 +193,30 @@ export async function toggleVisibility(skillId, newVisibility) {
 /** Delete a skill by id. */
 export async function deleteSkill(id) {
     requireAppwrite()
+    const user = await account.get()
+    if (!user) throw new Error('Not authenticated.')
+
+    // ── Ownership check: only the skill owner may delete it ──
+    const skill = await databases.getDocument(DATABASE_ID, SKILLS_TABLE_ID, id)
+    if (skill.user_id !== user.$id) {
+        throw new Error('Unauthorized: you can only delete your own skills.')
+    }
+
     await databases.deleteDocument(DATABASE_ID, SKILLS_TABLE_ID, id)
 }
 
 /** Update an existing skill. */
 export async function updateSkill(id, { title, content, tags }) {
     requireAppwrite()
+    const user = await account.get()
+    if (!user) throw new Error('Not authenticated.')
+
+    // ── Ownership check: only the skill owner may edit it ──
+    const skill = await databases.getDocument(DATABASE_ID, SKILLS_TABLE_ID, id)
+    if (skill.user_id !== user.$id) {
+        throw new Error('Unauthorized: you can only edit your own skills.')
+    }
+
     const data = await databases.updateDocument(
         DATABASE_ID,
         SKILLS_TABLE_ID,

@@ -144,6 +144,15 @@ export async function getProfileStats(userId) {
 /** Update a user's editable profile fields. */
 export async function updateProfile({ id, display_name, bio, avatar_url }) {
     requireAppwrite()
+    const user = await account.get()
+    if (!user) throw new Error('Not authenticated.')
+
+    // ── Ownership check: only the profile owner may edit their profile ──
+    const profile = await databases.getDocument(DATABASE_ID, USERS_TABLE_ID, id)
+    if (profile.user_id !== user.$id) {
+        throw new Error('Unauthorized: you can only edit your own profile.')
+    }
+
     const patch = { display_name: display_name ?? null, bio: bio ?? null }
     if (avatar_url !== undefined) patch.avatar_url = avatar_url
     const data = await databases.updateDocument(
@@ -158,7 +167,15 @@ export async function updateProfile({ id, display_name, bio, avatar_url }) {
 /** Toggles a skill in the user's saved_skills array */
 export async function toggleSavedSkill(profileId, skillId, action) {
     requireAppwrite()
+    const user = await account.get()
+    if (!user) throw new Error('Not authenticated.')
+
+    // ── Ownership check: only the profile owner may modify their bookmarks ──
     const profile = await databases.getDocument(DATABASE_ID, USERS_TABLE_ID, profileId)
+    if (profile.user_id !== user.$id) {
+        throw new Error('Unauthorized: you can only modify your own saved skills.')
+    }
+
     let saved = profile.saved_skills || []
     if (action === 'save' && !saved.includes(skillId)) saved.push(skillId)
     else if (action === 'unsave') saved = saved.filter(id => id !== skillId)
