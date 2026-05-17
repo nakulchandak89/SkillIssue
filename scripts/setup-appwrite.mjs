@@ -59,9 +59,9 @@ async function main() {
             [
                 Permission.read(Role.any()),          // profiles are public
                 Permission.create(Role.users()),      // any logged-in user can create their profile
-                Permission.update(Role.users()),      // per-document perms restrict who can update
-                Permission.delete(Role.users()),
-            ]
+                // update/delete removed from collection level — handled by per-document owner permissions
+            ],
+            true // documentSecurity: enforce per-document permissions for update/delete
         )
     );
     await sleep(500);
@@ -109,9 +109,10 @@ async function main() {
             [
                 Permission.read(Role.any()),          // public read — per-doc perms filter private ones
                 Permission.create(Role.users()),
-                Permission.update(Role.users()),
-                Permission.delete(Role.users()),
-            ]
+                Permission.update(Role.users()),      // required: starSkill/unstarSkill need any user to update star_count
+                // delete removed from collection level — enforced by per-document owner permissions
+            ],
+            true // documentSecurity: enforce per-document delete permissions
         )
     );
     await sleep(500);
