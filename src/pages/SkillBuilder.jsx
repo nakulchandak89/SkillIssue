@@ -637,10 +637,10 @@ export default function SkillBuilder() {
                 </div>
 
                 {/* ── Two-column grid ──────── */}
-                <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-6 lg:gap-8 lg:h-[calc(100vh-12rem)]">
+                <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-6 lg:gap-8 lg:h-[calc(100vh-12rem)] overflow-hidden">
 
                     {/* ── LEFT — Form Card ─── */}
-                    <div className={`rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.03] via-transparent to-transparent flex flex-col lg:overflow-hidden ${showOutput ? 'p-5 sm:p-6' : 'p-6 sm:p-8'}`}>
+                    <div className={`rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.03] via-transparent to-transparent flex flex-col overflow-y-auto min-h-0 ${showOutput ? 'p-5 sm:p-6' : 'p-6 sm:p-8'}`}>
 
                         <div className={showOutput ? 'mb-3' : 'mb-6'}>
                             <label className={`block font-clash font-semibold text-white/60 ${showOutput ? 'text-xs mb-1.5' : 'text-sm mb-2.5'}`}>
@@ -906,7 +906,7 @@ export default function SkillBuilder() {
                     </div>
 
                     {/* ── RIGHT — Output Panel (Sticky Sidebar) ───── */}
-                    <div className="flex flex-col lg:overflow-hidden">
+                    <div className="flex flex-col lg:overflow-hidden min-h-0">
 
                         {/* Loading */}
                         {isGenerating && <LoadingState />}
